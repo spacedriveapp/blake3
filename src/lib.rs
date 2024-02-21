@@ -218,7 +218,7 @@ fn counter_high(counter: u64) -> u32 {
 /// [`FromStr`]: https://doc.rust-lang.org/std/str/trait.FromStr.html
 #[cfg_attr(feature = "zeroize", derive(zeroize::Zeroize))]
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
-#[derive(Clone, Copy, Hash)]
+#[derive(Clone, Copy)]
 pub struct Hash([u8; OUT_LEN]);
 
 impl Hash {
@@ -310,6 +310,12 @@ impl PartialEq for Hash {
     #[inline]
     fn eq(&self, other: &Hash) -> bool {
         constant_time_eq::constant_time_eq_32(&self.0, &other.0)
+    }
+}
+
+impl std::hash::Hash for Hash {
+    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        self.0.hash(state)
     }
 }
 
@@ -789,7 +795,7 @@ fn compress_subtree_to_parent_node<J: join::Join>(
     debug_assert!(input.len() > CHUNK_LEN);
     let mut cv_array = [0; MAX_SIMD_DEGREE_OR_2 * OUT_LEN];
     let mut num_cvs =
-        compress_subtree_wide::<J>(input, &key, chunk_counter, flags, platform, &mut cv_array);
+        compress_subtree_wide::<J>(input, key, chunk_counter, flags, platform, &mut cv_array);
     debug_assert!(num_cvs >= 2);
 
     // If MAX_SIMD_DEGREE is greater than 2 and there's enough input,
