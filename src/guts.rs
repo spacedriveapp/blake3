@@ -25,6 +25,11 @@ impl ChunkState {
     }
 
     #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.0.len() == 0
+    }
+
+    #[inline]
     pub fn len(&self) -> usize {
         self.0.len()
     }
@@ -83,11 +88,11 @@ mod test {
         let mut hasher = crate::Hasher::new();
         let mut buf = [0; crate::CHUNK_LEN];
 
-        buf[0] = 'a' as u8;
+        buf[0] = b'a';
         hasher.update(&buf);
         let chunk0_cv = ChunkState::new(0).update(&buf).finalize(false);
 
-        buf[0] = 'b' as u8;
+        buf[0] = b'b';
         hasher.update(&buf);
         let chunk1_cv = ChunkState::new(1).update(&buf).finalize(false);
 
