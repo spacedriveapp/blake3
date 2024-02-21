@@ -176,6 +176,7 @@ impl Platform {
     // after every block, there's a small but measurable performance loss.
     // Compressing chunks with a dedicated loop avoids this.
 
+    #[allow(clippy::too_many_arguments)]
     pub fn hash_many<const N: usize>(
         &self,
         inputs: &[&[u8; N]],
@@ -418,6 +419,8 @@ pub fn sse2_detected() -> bool {
 }
 
 #[inline(always)]
+#[allow(clippy::erasing_op)]
+#[allow(clippy::identity_op)]
 pub fn words_from_le_bytes_32(bytes: &[u8; 32]) -> [u32; 8] {
     let mut out = [0; 8];
     out[0] = u32::from_le_bytes(*array_ref!(bytes, 0 * 4, 4));
@@ -432,6 +435,8 @@ pub fn words_from_le_bytes_32(bytes: &[u8; 32]) -> [u32; 8] {
 }
 
 #[inline(always)]
+#[allow(clippy::erasing_op)]
+#[allow(clippy::identity_op)]
 pub fn words_from_le_bytes_64(bytes: &[u8; 64]) -> [u32; 16] {
     let mut out = [0; 16];
     out[0] = u32::from_le_bytes(*array_ref!(bytes, 0 * 4, 4));
@@ -454,6 +459,8 @@ pub fn words_from_le_bytes_64(bytes: &[u8; 64]) -> [u32; 16] {
 }
 
 #[inline(always)]
+#[allow(clippy::erasing_op)]
+#[allow(clippy::identity_op)]
 pub fn le_bytes_from_words_32(words: &[u32; 8]) -> [u8; 32] {
     let mut out = [0; 32];
     *array_mut_ref!(out, 0 * 4, 4) = words[0].to_le_bytes();
@@ -468,6 +475,8 @@ pub fn le_bytes_from_words_32(words: &[u32; 8]) -> [u8; 32] {
 }
 
 #[inline(always)]
+#[allow(clippy::erasing_op)]
+#[allow(clippy::identity_op)]
 pub fn le_bytes_from_words_64(words: &[u32; 16]) -> [u8; 64] {
     let mut out = [0; 64];
     *array_mut_ref!(out, 0 * 4, 4) = words[0].to_le_bytes();
